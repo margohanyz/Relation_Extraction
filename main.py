@@ -7,34 +7,6 @@ import os, nltk, re
 #nltk.download('words')
 #nltk.download('ace')
 
-NE_CLASSES = {
-    'ieer': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
-    ],
-    'conll2002': ['LOC', 'PER', 'ORG'],
-    'ace': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
-        'FACILITY',
-        'GPE',
-    ],
-}
-
 sentence_list = []
 basepath = 'training/'
 for entry in os.listdir(basepath):
