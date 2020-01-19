@@ -7,34 +7,6 @@ import os, nltk, re
 #nltk.download('words')
 #nltk.download('ace')
 
-NE_CLASSES = {
-    'ieer': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
-    ],
-    'conll2002': ['LOC', 'PER', 'ORG'],
-    'ace': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
-        'FACILITY',
-        'GPE',
-    ],
-}
-
 sentence_list = []
 basepath = 'training/'
 for entry in os.listdir(basepath):
@@ -45,14 +17,17 @@ for entry in os.listdir(basepath):
 tokens = f.ie_preprocess(sentence_list)
 
 #grammar = "NP: {<DET|PRON\$>?<ADJ>*<NOUN>+}"
-grammar2 = r"""
-  PERSON: {<PERSON><PERSON>+}
-  NP: {<DT|JJ|NN.*>+}          # Chunk sequences of DT, JJ, NN
-  PP: {<IN><NP>}               # Chunk prepositions followed by NP
-  VP: {<VB.*><NP|PP|CLAUSE>+$} # Chunk verbs and their arguments
-  CLAUSE: {<NP><VP>}           # Chunk NP, VP
-  """
-cp = nltk.RegexpParser(grammar2)
+#grammar2 = r"""
+#  PERSON: {<PERSON><PERSON>+}
+#  NP: {<DT|JJ|NN.*>+}          # Chunk sequences of DT, JJ, NN
+#  PP: {<IN><NP>}               # Chunk prepositions followed by NP
+#  VP: {<VB.*><NP|PP|CLAUSE>+$} # Chunk verbs and their arguments
+#  CLAUSE: {<NP><VP>}           # Chunk NP, VP
+#  """
+
+grammar3 = "PERSON: {<PERSON><PERSON>+}"
+
+cp = nltk.RegexpParser(grammar3)
 
 chunks = []
 for t in tokens:
@@ -60,17 +35,17 @@ for t in tokens:
     chunk2 = cp.parse(chunk)
     chunks.append(chunk2)
 
-#print(type(chunks[4]))
-
-IN = re.compile(r'.*\bin\b(?!\b.+ing)')
-IN2 = re.compile(r'.*\bin\b.*')
-X = re.compile(r'\b')
+IN = re.compile(r'.*\bcapital\b(?!\b.+ing)')
+#IN2 = re.compile(r'.*\bin\b.*')
+#X = re.compile(r'\b')
 
 #for doc in nltk.corpus.ieer.parsed_docs('NYT_19980315'):
 #    for rel in nltk.sem.extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern = IN):
 #        print(nltk.sem.rtuple(rel))
 
-for rel in nltk.sem.extract_rels('PER', 'ORG', chunks, pattern = IN):
-    print(nltk.sem.rtuple(rel))
+#x = nltk.sem.extract_rels('PER', 'ORG', chunks, corpus='ace', pattern = IN)
+for tree in chunks:
+    for rel in nltk.sem.extract_rels('GPE', 'GPE', tree, corpus='ace', pattern = IN):
+        print(nltk.sem.rtuple(rel))
 
-x = 1
+ox = 1
